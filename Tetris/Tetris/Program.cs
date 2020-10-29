@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Tetris
@@ -12,7 +14,34 @@ namespace Tetris
         {
             Console.SetWindowSize(40, 30);
             Console.SetBufferSize(40, 30);
-            Console.ReadLine();
+            FigureGenerator generator = new FigureGenerator(20, 0, '*');
+            Figure figure = generator.GetNewFigure();
+            while (true)
+            {
+
+                if (Console.KeyAvailable)
+                {
+                    var key = Console.ReadKey();
+                    HandleKey(figure, key);
+                }
+            }
+        }
+
+        private static void HandleKey(Figure figure, ConsoleKeyInfo key)
+        {
+            switch (key.Key)
+            {
+                case ConsoleKey.LeftArrow:
+                    figure.TryMove(Direction.LEFT);
+                    break;
+                case ConsoleKey.RightArrow:
+                    figure.TryMove(Direction.RIGHT);
+                    break;
+                case ConsoleKey.DownArrow:
+                    figure.TryMove(Direction.DOWN);
+                    break;
+                default: break;
+            }
         }
     }
 

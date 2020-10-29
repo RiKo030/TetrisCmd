@@ -12,6 +12,12 @@ namespace Tetris
         public int y;
         public char c;
 
+        public Point(Point p)
+        {
+            x = p.x;
+            y = p.y;
+            c = p.c;
+        }
         public Point(int coordX,int coordY,char symbol)
         {
             x = coordX;
@@ -23,6 +29,7 @@ namespace Tetris
         {
             Console.SetCursorPosition(x, y);
             Console.Write(c);
+            Console.CursorVisible = false;
         }
 
         public void Move(Direction dir)
@@ -39,6 +46,12 @@ namespace Tetris
                     x += 1;
                     break;
             }
+        }
+
+        public void Hide()
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(" ");
         }
     }
 }
