@@ -43,7 +43,7 @@ namespace Tetris
         {
             foreach(Point p in clone)
             {
-                if (p.x < 0 || p.y < 0 || p.x >= 39 || p.y >= 29)
+                if (p.X < 0 || p.Y < 0 || p.X >= Field.WIDTH-1 || p.Y >= Field.HEIGHT-1)
                     return false;
             }
 
@@ -57,6 +57,7 @@ namespace Tetris
                 p.Move(dir);
             }
         }
+
 
         private Point[] Clone()
         {

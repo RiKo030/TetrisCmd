@@ -19,7 +19,7 @@ namespace Tetris
 
         public override void Rotate()
         {
-            if (points[0].x == points[1].x)
+            if (points[0].X == points[1].X)
             {
                 RotateHorisontal();
             }
@@ -31,19 +31,39 @@ namespace Tetris
 
         private void RotateHorisontal()
         {
-            for(int i = 0; i < points.Length; i++)
+            if (30 - points[0].X >= 4)
             {
-                points[i].y = points[0].y;
-                points[i].x = points[0].x + i;
+                Hide();
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i].Y = points[0].Y;
+                    points[i].X = points[0].X + i;
+                }
+                
+                Draw();
             }
+            else
+            {
+                Hide();
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i].Y = points[0].Y;
+                    points[i].X = points[0].X - i;
+                }
+                
+                Draw();
+            }
+
         }
 
         private void RotateVertical()
         {
             for(int i=0;i<points.Length; i++)
             {
-                points[i].y = points[0].y + i;
-                points[i].x = points[0].x;
+                Hide();
+                points[i].Y = points[0].Y + i;
+                points[i].X = points[0].X;
+                Draw();
             }
         }
     }
