@@ -31,7 +31,7 @@ namespace Tetris
 
         private void RotateHorisontal()
         {
-            if (30 - points[0].X >= 4)
+            if (Field.WIDTH - points[0].X >= 4)
             {
                 Hide();
                 for (int i = 0; i < points.Length; i++)

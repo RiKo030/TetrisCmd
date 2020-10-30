@@ -46,6 +46,7 @@
     <Compile Include="Direction.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="FigureGenerator.cs" />
+    <Compile Include="FigureStatus.cs" />
     <Compile Include="HorisontalStick.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Program.cs" />

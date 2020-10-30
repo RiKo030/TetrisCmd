@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,25 +30,32 @@ namespace Tetris
         //    Draw();
         //}
 
-        internal void TryMove(Direction dir)
+        internal FigureStatus TryMove(Direction dir)
         {
             Hide();
             var clone = Clone();
             Move(clone, dir);
-            if (VerifyPosition(clone))
+            var result = VerifyPosition(clone);
+            if (result == FigureStatus.SUCCESS)
                 points = clone;
             Draw();
+
+            return result;
         }
 
-        private bool VerifyPosition(Point[] clone)
+        private FigureStatus VerifyPosition(Point[] clone)
         {
             foreach(Point p in clone)
             {
-                if (p.X < 0 || p.Y < 0 || p.X >= Field.WIDTH-1 || p.Y >= Field.HEIGHT-1)
-                    return false;
+                if (p.X < 0 || p.Y < 0 || p.X >= Field.WIDTH-1)
+                    return FigureStatus.BORDER_STRIKE;
+                if (p.Y >= Field.HEIGHT - 2)
+                    return FigureStatus.DOWN_BORDER_STRIKE;
+                if (Field.CheckStrike(p))
+                    return FigureStatus.HEAP_STRIKE;
             }
 
-            return true;
+            return FigureStatus.SUCCESS;
         }
 
         public void Move(Point[] pList,Direction dir)
