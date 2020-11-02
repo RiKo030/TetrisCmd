@@ -33,48 +33,55 @@ namespace Tetris
         internal FigureStatus TryMove(Direction dir)
         {
             Hide();
-            var clone = Clone();
-            Move(clone, dir);
-            var result = VerifyPosition(clone);
-            if (result == FigureStatus.SUCCESS)
-                points = clone;
-            Draw();
+            Move(dir);
+            var result = VerifyPosition();
+            if (result != FigureStatus.SUCCESS)
+                Move(Reverse(dir));
 
+
+            Draw();
             return result;
         }
 
-        private FigureStatus VerifyPosition(Point[] clone)
+        private Direction Reverse(Direction dir)
         {
-            foreach(Point p in clone)
+            switch (dir)
             {
-                if (p.X < 0 || p.Y < 0 || p.X >= Field.WIDTH-1)
+                case Direction.LEFT:
+                    return Direction.RIGHT;
+                case Direction.RIGHT:
+                    return Direction.LEFT;
+                case Direction.DOWN:
+                    return Direction.UP;
+                case Direction.UP:
+                    return Direction.DOWN;
+
+            }
+            return dir;
+        }
+
+        private FigureStatus VerifyPosition()
+        {
+            foreach(Point p in points)
+            {
+                if (p.X < 0 || p.Y < 0 || p.X >= Field.WIDTH)
                     return FigureStatus.BORDER_STRIKE;
-                if (p.Y >= Field.HEIGHT - 2)
+                if (p.Y >= Field.HEIGHT-1)
                     return FigureStatus.DOWN_BORDER_STRIKE;
                 if (Field.CheckStrike(p))
                     return FigureStatus.HEAP_STRIKE;
             }
-
             return FigureStatus.SUCCESS;
+
+            
         }
 
-        public void Move(Point[] pList,Direction dir)
+        public void Move(Direction dir)
         {
-            foreach(Point p in pList)
+            foreach(Point p in points)
             {
                 p.Move(dir);
             }
-        }
-
-
-        private Point[] Clone()
-        {
-            var newPoints = new Point[LENGTH];
-            for(int i = 0; i < LENGTH; i++)
-            {
-                newPoints[i] = new Point(points[i]);
-            }
-            return newPoints;
         }
 
         public void Hide()
@@ -83,6 +90,13 @@ namespace Tetris
             {
                 p.Hide();
             }
+        }
+
+        internal bool IsOnTop()
+        {
+            if (points[0].Y == 0)
+                return true;
+            else return false;
         }
 
         public abstract void Rotate();

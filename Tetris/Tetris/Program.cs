@@ -1,33 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Tetris
 {
     class Program
     {
-        static FigureGenerator generator = new FigureGenerator(20, 0, '*');
+        static FigureGenerator generator = new FigureGenerator(Field.WIDTH/2, Field.HEIGHT*0, Drawer.DEFAULT_SYMBOL);
+        static Figure figure = generator.GetNewFigure();
+        static System.Timers.Timer timer;
+        const int TIMER_INTERVAL = 100;
+        static private Object _lockObject = new object();
         static void Main(string[] args)
         {
             Console.SetWindowSize(Field.WIDTH, Field.HEIGHT);
             Console.SetBufferSize(Field.WIDTH, Field.HEIGHT);
+            SetTimer();
             
-            Figure figure = generator.GetNewFigure();
             while (true)
             {
 
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey();
+                    Monitor.Enter(_lockObject);
                     var result = HandleKey(figure, key);
                     ProcessResult(result, ref figure);
+                    Monitor.Exit(_lockObject);
                 }
             }
+        }
+
+        public static void SetTimer()
+        {
+            timer = new System.Timers.Timer(TIMER_INTERVAL);
+            timer.Elapsed += OnTimedEvent;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+        }
+
+        private static void OnTimedEvent(object sender, ElapsedEventArgs e)
+        {
+            Monitor.Enter(_lockObject);
+            var result = figure.TryMove(Direction.DOWN);
+            ProcessResult(result, ref figure);
+            Monitor.Exit(_lockObject);
         }
 
         private static bool ProcessResult(FigureStatus result, ref Figure figure)
@@ -35,10 +59,23 @@ namespace Tetris
             if (result == FigureStatus.HEAP_STRIKE || result == FigureStatus.DOWN_BORDER_STRIKE)
             {
                 Field.AddFigure(figure);
+                Field.TryDeleteLines();
+                if(figure.IsOnTop())
+                {
+                    WriteGameOver();
+                    timer.Stop();
+                    return true;
+                }
                 figure = generator.GetNewFigure();
                 return true;
             }
             else return false;
+        }
+
+        private static void WriteGameOver()
+        {
+            Console.SetCursorPosition(Field.WIDTH / 2 - 8, Field.HEIGHT / 2);
+            Console.WriteLine("G A M E    O V E R");
         }
 
         private static FigureStatus HandleKey(Figure figure, ConsoleKeyInfo key)
@@ -49,8 +86,6 @@ namespace Tetris
                     return figure.TryMove(Direction.LEFT);
                 case ConsoleKey.RightArrow:
                     return figure.TryMove(Direction.RIGHT);
-                case ConsoleKey.DownArrow:
-                    return figure.TryMove(Direction.DOWN);
                 case ConsoleKey.Spacebar:
                     figure.Rotate();
                     break;
