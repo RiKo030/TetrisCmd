@@ -27,8 +27,7 @@ namespace Tetris
 
         public void Draw()
         {
-            Console.SetCursorPosition(X, Y);
-            Console.Write(C);
+            DrawerProvier.Drawer.DrawPoint(X, Y);
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
         }
@@ -54,8 +53,7 @@ namespace Tetris
 
         public void Hide()
         {
-            Console.SetCursorPosition(X, Y);
-            Console.Write(" ");
+            DrawerProvier.Drawer.HidePoint(X, Y);
         }
     }
 }

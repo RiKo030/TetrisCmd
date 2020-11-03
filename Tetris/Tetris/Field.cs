@@ -61,9 +61,9 @@ namespace Tetris
                 for (int i = 0; i < WIDTH; i++)
                 {
                     if (_heap[j][i])
-                        Drawer.DrawPoint(i, j);
+                        DrawerProvier.Drawer.DrawPoint(i, j);
                     else
-                        Drawer.HidePoint(i, j);
+                        DrawerProvier.Drawer.HidePoint(i, j); 
                 }
             }
         }

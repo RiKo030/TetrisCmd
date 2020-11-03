@@ -13,15 +13,14 @@ namespace Tetris
 {
     class Program
     {
-        static FigureGenerator generator = new FigureGenerator(Field.WIDTH/2, Field.HEIGHT*0, Drawer.DEFAULT_SYMBOL);
+        static FigureGenerator generator = new FigureGenerator(Field.WIDTH/2, Field.HEIGHT*0);
         static Figure figure = generator.GetNewFigure();
         static System.Timers.Timer timer;
         const int TIMER_INTERVAL = 100;
         static private Object _lockObject = new object();
         static void Main(string[] args)
         {
-            Console.SetWindowSize(Field.WIDTH, Field.HEIGHT);
-            Console.SetBufferSize(Field.WIDTH, Field.HEIGHT);
+            DrawerProvier.Drawer.InitField();
             SetTimer();
             
             while (true)
@@ -62,7 +61,7 @@ namespace Tetris
                 Field.TryDeleteLines();
                 if(figure.IsOnTop())
                 {
-                    WriteGameOver();
+                    DrawerProvier.Drawer.WriteGameOver();
                     timer.Stop();
                     return true;
                 }
@@ -70,12 +69,6 @@ namespace Tetris
                 return true;
             }
             else return false;
-        }
-
-        private static void WriteGameOver()
-        {
-            Console.SetCursorPosition(Field.WIDTH / 2 - 8, Field.HEIGHT / 2);
-            Console.WriteLine("G A M E    O V E R");
         }
 
         private static FigureStatus HandleKey(Figure figure, ConsoleKeyInfo key)

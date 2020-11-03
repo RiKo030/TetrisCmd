@@ -10,11 +10,10 @@ namespace Tetris
 
         private Random _rand = new Random();
 
-        public FigureGenerator(int coordX, int coordY, char symbol)
+        public FigureGenerator(int coordX, int coordY)
         {
             _x = coordX;
             _y = coordY;
-            _c = symbol;
         }
 
         public Figure GetNewFigure()
